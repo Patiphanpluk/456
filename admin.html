@@ -9,7 +9,7 @@
         h1, h2 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-top: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input[type="text"], .form-group input[type="date"], .form-group input[type="time"], .form-group input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        .form-group input:not([type="checkbox"]):not([type="file"]), .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
         .checkbox-group label { margin-right: 15px; font-weight: normal; }
         button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
         button:hover { background-color: #0056b3; }
@@ -19,26 +19,37 @@
         .image-table img { max-height: 50px; max-width: 100px; }
         .warning { color: #ff0000; font-weight: bold; margin-bottom: 20px; padding: 10px; background-color: #ffe0e0; border: 1px solid #ffcccc; border-radius: 4px; }
         .note { color: #007bff; margin-bottom: 15px; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <h1>🛠️ ระบบจัดการรูปภาพ Slideshow TV</h1>
         <div class="note">
-            <a href="tv.html" target="_blank">👉 เปิดหน้าแสดงผล TV (Display)</a>
+            <a href="index.html" target="_blank">👉 เปิดหน้าแสดงผล TV (Display)</a>
         </div>
         
         <div class="warning">
-            ⚠️ **ข้อควรระวัง:** ระบบนี้ใช้ **Local Storage** ข้อมูลจะถูกเก็บในเบราว์เซอร์นี้เท่านั้น และคุณต้องนำ **URL รูปภาพจาก pic.in.th** มากรอกด้วยตัวเอง
+            ⚠️ **ข้อควรระวังเรื่องความปลอดภัย:** API Key ของ Pic.in.th ถูกใส่ไว้ในโค้ด JavaScript ซึ่ง **เปิดเผยต่อสาธารณะ**
         </div>
 
-        <h2>➕ เพิ่ม/แก้ไขรูปภาพ</h2>
+        <h2>➕ อัปโหลดและเพิ่มรูปภาพ</h2>
+        
+        <div class="form-group">
+            <label for="image-file">อัปโหลดรูปภาพ (เลือกไฟล์)</label>
+            <input type="file" id="image-file" accept="image/*">
+            <button type="button" id="upload-btn" style="margin-top: 10px;">อัปโหลดและรับลิงก์</button>
+            <p id="upload-status" style="margin-top: 10px; color: #dc3545;"></p>
+        </div>
+        
         <form id="image-form">
             <input type="hidden" id="image-id">
 
             <div class="form-group">
-                <label for="image-url">URL รูปภาพ (จาก Pic.in.th)</label>
-                <input type="text" id="image-url" placeholder="เช่น https://i.pic.in.th/pic/XXXXX.jpg" required>
+                <label for="image-url">URL รูปภาพ (ระบบจะกรอกให้อัตโนมัติหลังอัปโหลด)</label>
+                <input type="text" id="image-url" placeholder="URL รูปภาพจาก Pic.in.th" required readonly>
             </div>
 
             <div class="form-group">
@@ -103,6 +114,10 @@
             <tbody id="image-list">
                 </tbody>
         </table>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
     </div>
 
     <script src="admin.js"></script>
