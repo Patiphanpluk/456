@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slideshow TV Display</title>
+    <link rel="stylesheet" href="tv.css">
+</head>
+<body>
+    <div class="tv-container">
+        <div id="blurred-background" class="blurred-bg"></div>
+        
+        <div class="image-display-container">
+            <img id="current-image" src="" alt="Slideshow Image" class="slideshow-image">
+            <p id="no-image-message" style="color:white; z-index:20; display:none; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;">
+                ไม่มีรูปภาพที่กำหนดไว้ หรือไม่อยู่ในช่วงเวลาแสดงผล
+            </p>
+        </div>
+    </div>
+    
+    <script src="tv.js"></script>
+</body>
+</html>
