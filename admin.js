@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelBtn.addEventListener('click', resetForm);
     uploadBtn.addEventListener('click', handleUpload);
 
-    // --- ฟังก์ชันจัดการการอัปโหลดไฟล์ (แก้ไข) ---
+    // --- ฟังก์ชันจัดการการอัปโหลดไฟล์ (Pic.in.th API) ---
 
     async function handleUpload() {
         const file = fileInput.files[0];
@@ -36,27 +36,23 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const formData = new FormData();
             formData.append('file', file);
-            // 🔴 แก้ไข: เพิ่ม API Key เป็นพารามิเตอร์ใน FormData แทน Header
+            // ส่ง API Key ผ่าน FormData ตามรูปแบบ API ที่คาดหวัง
             formData.append('key', PIC_IN_TH_API_KEY); 
             
-            // 🔴 แก้ไข: ไม่ต้องใส่ Headers ด้วยมือสำหรับ FormData (เบราว์เซอร์จะจัดการเอง)
-
             const response = await fetch(PIC_IN_TH_URL, {
                 method: 'POST',
-                body: formData // ส่ง FormData ที่มีทั้งไฟล์และ API Key
+                body: formData 
             });
 
             const result = await response.json();
 
             if (response.ok && result.status === 'success') {
-                // Pic.in.th คืนค่า URL ที่ใช้แสดงผลใน 'url_viewer'
                 const uploadedUrl = result.url_viewer; 
                 imageUrlInput.value = uploadedUrl;
                 uploadStatus.textContent = '✅ อัปโหลดสำเร็จ! URL ถูกกรอกในช่องเรียบร้อย';
                 uploadStatus.style.color = '#10b981';
 
             } else {
-                // แสดงข้อความผิดพลาดจาก API หากมี
                 uploadStatus.textContent = `❌ อัปโหลดล้มเหลว: ${result.message || 'ไม่สามารถอัปโหลดไฟล์ได้ (ตรวจสอบขนาด/ประเภทไฟล์)'}`;
                 uploadStatus.style.color = '#dc3545';
             }
@@ -71,9 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- ส่วนฟังก์ชันอื่น ๆ (getImages, saveImages, loadImages, handleFormSubmit, editImage, deleteImage, resetForm) ใช้โค้ดเดิม ---
-    
-    
+    // --- ฟังก์ชันจัดการข้อมูล (ส่วนที่เหลือ) ---
+
     function getImages() {
         const data = localStorage.getItem(IMAGE_STORAGE_KEY);
         return data ? JSON.parse(data) : [];
@@ -210,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelBtn.style.display = 'none';
         uploadStatus.textContent = '';
         fileInput.value = '';
-        imageUrlInput.value = ''; // 🔴 FIX: ล้าง URL ที่กรอกแล้ว
+        imageUrlInput.value = ''; 
         
         document.getElementById('duration-sec').value = 10;
         document.getElementById('start-time').value = '08:00';
