@@ -1,34 +1,68 @@
-/* กำหนดค่าเริ่มต้นและอัตราส่วน 16:9 */
+/* --- Admin Panel General Styles --- */
+.admin-container { 
+    padding: 20px; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    font-family: sans-serif; 
+    background-color: #f4f4f9; 
+    min-height: 100vh; 
+}
+h1, h2 { color: #333; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-top: 20px; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+.form-group input:not([type="checkbox"]):not([type="file"]), .form-group textarea { 
+    width: 100%; 
+    padding: 10px; 
+    border: 1px solid #ddd; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+.form-group input[readonly] {
+    background-color: #e9ecef;
+}
+.checkbox-group label { margin-right: 15px; font-weight: normal; }
+button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+button:hover { background-color: #0056b3; }
+.image-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.image-table th, .image-table td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: middle;}
+.image-table th { background-color: #e9ecef; }
+.image-table img { max-height: 50px; max-width: 100px; }
+.warning { color: #ff0000; font-weight: bold; margin-bottom: 20px; padding: 10px; background-color: #ffe0e0; border: 1px solid #ffcccc; border-radius: 4px; }
+.note { color: #007bff; margin-bottom: 15px; }
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.spinner { border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+/* --- TV Display Specific Styles --- */
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* ซ่อน scrollbars */
+    overflow: hidden; 
     background-color: #000;
     font-family: sans-serif;
 }
 
 .tv-container {
     position: relative;
-    width: 100vw; /* 100% ของความกว้าง viewport */
-    height: 100vh; /* 100% ของความสูง viewport */
+    width: 100vw; 
+    height: 100vh; 
 }
 
-/* พื้นหลังเบลอ - เต็มหน้าจอและมี filter blur */
 .blurred-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover; /* ครอบคลุมพื้นที่ทั้งหมด (16:9) */
+    background-size: cover; 
     background-position: center center;
-    filter: blur(50px); /* ระดับความเบลอ */
-    opacity: 0.8; /* ให้เห็นสีดำของ body บ้าง */
+    filter: blur(50px); 
+    opacity: 0.8; 
     transition: background-image 1s ease-in-out;
 }
 
-/* ตัวครอบรูปภาพหลักเพื่อจัดกึ่งกลาง */
 .image-display-container {
     position: absolute;
     top: 0;
@@ -36,17 +70,36 @@ body, html {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center; /* จัดกึ่งกลางแนวนอน */
-    align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+    justify-content: center; 
+    align-items: center; 
     z-index: 10; 
 }
 
-/* รูปภาพที่แสดงผลจริง */
 .slideshow-image {
     display: block;
-    max-height: 100%; /* ให้ความสูงสูงสุดเป็น 100% ของ TV Container */
-    width: auto; /* ให้ความกว้างปรับตามอัตราส่วนจริง (คงอัตราส่วน) */
-    max-width: none; /* ยกเลิก max-width เพื่อให้ความสูงเป็นหลัก */
+    max-height: 100%; 
+    width: auto; 
+    max-width: none; 
     transition: opacity 1s ease-in-out;
-    object-fit: contain; /* สำคัญ: เพื่อให้รูปภาพคงอัตราส่วนและแสดงผลเต็มความสูง */
+    object-fit: contain; 
+}
+
+/* Floating Admin Button Style */
+.admin-link-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: sans-serif;
+    font-size: 16px;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+.admin-link-button:hover {
+    opacity: 1;
 }
