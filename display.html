@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slideshow TV Display</title>
+    <link rel="stylesheet" href="tv.css">
+</head>
+<body>
+    <div class="tv-container">
+        <div id="blurred-background" class="blurred-bg"></div>
+        
+        <div class="image-display-container">
+            <img id="current-image" src="" alt="Slideshow Image" class="slideshow-image">
+            <div id="no-image-message" style="color:white; z-index:20; display:none; background: rgba(0,0,0,0.5); padding: 25px; border-radius: 12px; text-align: center;">
+                <p style="margin-bottom: 15px; font-size: 1.2em;">ไม่มีรูปภาพที่กำหนดไว้ หรือไม่อยู่ในช่วงเวลาแสดงผล</p>
+                <a href="index.html" class="admin-link-button" style="position: static; margin-top: 10px; display: inline-block;">
+                    ไปยังหน้า Admin เพื่อตั้งค่า
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <a href="index.html" class="admin-link-button" id="floating-admin-btn">ไปยังหน้า Admin</a>
+
+    <script src="display.js"></script>
+</body>
+</html>
