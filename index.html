@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slideshow TV Display</title>
     <link rel="stylesheet" href="tv.css">
+    <style>
+        /* สไตล์สำหรับปุ่ม Admin ที่ซ่อนอยู่ */
+        .admin-link-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .admin-link-button:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <div class="tv-container">
@@ -12,12 +33,17 @@
         
         <div class="image-display-container">
             <img id="current-image" src="" alt="Slideshow Image" class="slideshow-image">
-            <p id="no-image-message" style="color:white; z-index:20; display:none; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;">
-                ไม่มีรูปภาพที่กำหนดไว้ หรือไม่อยู่ในช่วงเวลาแสดงผล
-            </p>
+            <div id="no-image-message" style="color:white; z-index:20; display:none; background: rgba(0,0,0,0.5); padding: 25px; border-radius: 12px; text-align: center;">
+                <p style="margin-bottom: 15px; font-size: 1.2em;">ไม่มีรูปภาพที่กำหนดไว้ หรือไม่อยู่ในช่วงเวลาแสดงผล</p>
+                <a href="admin.html" class="admin-link-button" style="position: static; margin-top: 10px; display: inline-block;">
+                    ไปยังหน้า Admin เพื่อตั้งค่า
+                </a>
+            </div>
         </div>
     </div>
     
+    <a href="admin.html" class="admin-link-button" id="floating-admin-btn">ไปยังหน้า Admin</a>
+
     <script src="tv.js"></script>
 </body>
 </html>
