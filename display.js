@@ -8,9 +8,7 @@ let images = [];
 let currentImageIndex = 0;
 let slideshowTimeout;
 
-// ... (ฟังก์ชัน getCurrentDayAbbrev, getImagesFromStorage, displayImage, stopSlideshow เหมือนเดิม)
-
-// Helper function: แปลงวันในสัปดาห์ปัจจุบันเป็นชื่อย่อ (e.g., 'Mon', 'Sun')
+// Helper functions
 function getCurrentDayAbbrev() {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     return days[new Date().getDay()];
@@ -24,24 +22,31 @@ function getImagesFromStorage() {
 function displayImage(index) {
     const imgData = images[index];
     if (!imgData) return;
-    blurredBackground.style.backgroundImage = `url('${imgData.url}')`;
-    imageElement.src = imgData.url;
+    // ใช้ CSS Transition เพื่อให้ภาพเปลี่ยนอย่างนุ่มนวล (opacity)
+    imageElement.style.opacity = 0; 
+    setTimeout(() => {
+        blurredBackground.style.backgroundImage = `url('${imgData.url}')`;
+        imageElement.src = imgData.url;
+        imageElement.onload = () => {
+            imageElement.style.opacity = 1;
+        };
+    }, 500); // 0.5 วินาที
 }
 
 function stopSlideshow() {
     if (slideshowTimeout) clearTimeout(slideshowTimeout);
 }
-// ... (จบฟังก์ชันที่เหมือนเดิม)
 
-// 2. กรองและเริ่มต้นสไลด์โชว์ (แก้ไขการจัดการเมื่อไม่มีรูปภาพ)
+// 2. กรองและเริ่มต้นสไลด์โชว์
 function fetchAndFilterImages() {
     const allImages = getImagesFromStorage();
     
-    // หากไม่มีข้อมูลใน Local Storage เลย ให้เปลี่ยนเส้นทางไปยังหน้า Admin
+    // หากไม่มีข้อมูลใน Local Storage เลย ให้เปลี่ยนเส้นทางไปยังหน้า Admin (index.html)
     if (allImages.length === 0) {
         // เปลี่ยนเส้นทางหลังจาก 3 วินาที เพื่อให้ผู้ใช้เห็นหน้าจอทีวีก่อน
         setTimeout(() => {
-             window.location.href = 'admin.html';
+             // 🔴 Redirect ไปที่ index.html (หน้า Admin)
+             window.location.href = 'index.html';
         }, 3000); 
         floatingAdminBtn.style.display = 'none'; // ซ่อนปุ่มลอย
         return;
@@ -77,7 +82,7 @@ function fetchAndFilterImages() {
         stopSlideshow();
         imageElement.style.display = 'none';
         blurredBackground.style.backgroundImage = 'none';
-        noImageMessage.style.display = 'block';
+        noImageMessage.style.display = 'flex'; // แสดงข้อความพร้อมปุ่ม Admin
         floatingAdminBtn.style.display = 'none'; // ซ่อนปุ่มลอยเมื่อแสดงกล่องข้อความ
     } else {
         noImageMessage.style.display = 'none';
@@ -87,7 +92,7 @@ function fetchAndFilterImages() {
     }
 }
 
-// 3. เริ่มต้นและจัดการสไลด์โชว์ (เหมือนเดิม)
+// 3. เริ่มต้นและจัดการสไลด์โชว์
 function startSlideshow() {
     if (images.length === 0) return;
     if (slideshowTimeout) clearTimeout(slideshowTimeout);
