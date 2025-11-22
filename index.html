@@ -3,47 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slideshow TV Display</title>
-    <link rel="stylesheet" href="tv.css">
-    <style>
-        /* สไตล์สำหรับปุ่ม Admin ที่ซ่อนอยู่ */
-        .admin-link-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-family: sans-serif;
-            font-size: 16px;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-        .admin-link-button:hover {
-            opacity: 1;
-        }
-    </style>
-</head>
+    <title>Admin - Slideshow Manager</title>
+    <link rel="stylesheet" href="tv.css"> </head>
 <body>
-    <div class="tv-container">
-        <div id="blurred-background" class="blurred-bg"></div>
-        
-        <div class="image-display-container">
-            <img id="current-image" src="" alt="Slideshow Image" class="slideshow-image">
-            <div id="no-image-message" style="color:white; z-index:20; display:none; background: rgba(0,0,0,0.5); padding: 25px; border-radius: 12px; text-align: center;">
-                <p style="margin-bottom: 15px; font-size: 1.2em;">ไม่มีรูปภาพที่กำหนดไว้ หรือไม่อยู่ในช่วงเวลาแสดงผล</p>
-                <a href="admin.html" class="admin-link-button" style="position: static; margin-top: 10px; display: inline-block;">
-                    ไปยังหน้า Admin เพื่อตั้งค่า
-                </a>
-            </div>
+    <div class="admin-container">
+        <h1>🛠️ ระบบจัดการรูปภาพ Slideshow TV</h1>
+        <div class="note">
+            <a href="display.html" target="_blank">👉 เปิดหน้าแสดงผล TV (Display)</a>
         </div>
-    </div>
-    
-    <a href="admin.html" class="admin-link-button" id="floating-admin-btn">ไปยังหน้า Admin</a>
+        
+        <div class="warning">
+            ⚠️ **ข้อควรระวังเรื่องความปลอดภัย:** API Key ของ Pic.in.th ถูกใส่ไว้ในโค้ด JavaScript ซึ่ง **เปิดเผยต่อสาธารณะ**
+        </div>
 
-    <script src="tv.js"></script>
+        <h2>➕ อัปโหลดและเพิ่มรูปภาพ</h2>
+        
+        <div class="form-group">
+            <label for="image-file">อัปโหลดรูปภาพ (เลือกไฟล์)</label>
+            <input type="file" id="image-file" accept="image/*">
+            <button type="button" id="upload-btn" style="margin-top: 10px;">อัปโหลดและรับลิงก์</button>
+            <p id="upload-status" style="margin-top: 10px; color: #dc3545;"></p>
+        </div>
+        
+        <form id="image-form">
+            <input type="hidden" id="image-id">
+
+            <div class="form-group">
+                <label for="image-url">URL รูปภาพ (ระบบจะกรอกให้อัตโนมัติหลังอัปโหลด)</label>
+                <input type="text" id="image-url" placeholder="URL รูปภาพจาก Pic.in.th" required readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="expiry-date">วันหมดอายุ (ไม่ต้องระบุหากต้องการแสดงถาวร)</label>
+                <input type="date" id="expiry-date">
+            </div>
+
+            <div class="form-group">
+                <label for="duration-sec">ระยะเวลาแสดง (วินาที)</label>
+                <input type="number" id="duration-sec" value="10" min="5" required>
+            </div>
+
+            <h3>ตารางเวลาแสดงผลประจำวัน</h3>
+            <div class="form-group">
+                <label for="start-time">เริ่มแสดงเวลา</label>
+                <input type="time" id="start-time" value="08:00" required>
+            </div>
+            <div class="form-group">
+                <label for="end-time">สิ้นสุดแสดงเวลา</label>
+                <input type="time" id="end-time" value="20:00" required>
+            </div>
+            
+            <div class="form-group">
+                <label>วนซ้ำทุกวัน?</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="every-day-check">
+                    <label for="every-day-check">วนทุกวัน (All Days)</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>วนซ้ำวันใดบ้าง (หากไม่วนทุกวัน)</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="Mon" value="Mon"><label for="Mon">จ.</label>
+                    <input type="checkbox" id="Tue" value="Tue"><label for="Tue">อ.</label>
+                    <input type="checkbox" id="Wed" value="Wed"><label for="Wed">พ.</label>
+                    <input type="checkbox" id="Thu" value="Thu"><label for="Thu">พฤ.</label>
+                    <input type="checkbox" id="Fri" value="Fri"><label for="Fri">ศ.</label>
+                    <input type="checkbox" id="Sat" value="Sat"><label for="Sat">ส.</label>
+                    <input type="checkbox" id="Sun" value="Sun"><label for="Sun">อา.</label>
+                </div>
+            </div>
+
+            <button type="submit" id="submit-btn">บันทึกรูปภาพ</button>
+            <button type="button" id="cancel-btn" style="display:none;">ยกเลิกการแก้ไข</button>
+        </form>
+
+        <hr>
+
+        <h2>🖼️ รูปภาพทั้งหมดที่บันทึกไว้</h2>
+        <table class="image-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>รูปภาพ</th>
+                    <th>ระยะเวลา (วิ)</th>
+                    <th>แสดงวัน/เวลา</th>
+                    <th>วันหมดอายุ</th>
+                    <th>จัดการ</th>
+                </tr>
+            </thead>
+            <tbody id="image-list">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="admin.js"></script>
 </body>
 </html>
