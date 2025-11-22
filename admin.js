@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelBtn.addEventListener('click', resetForm);
     uploadBtn.addEventListener('click', handleUpload);
 
-    // --- ฟังก์ชันจัดการการอัปโหลดไฟล์ ---
+    // --- ฟังก์ชันจัดการการอัปโหลดไฟล์ (แก้ไข) ---
 
     async function handleUpload() {
         const file = fileInput.files[0];
@@ -36,32 +36,33 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const formData = new FormData();
             formData.append('file', file);
+            // 🔴 แก้ไข: เพิ่ม API Key เป็นพารามิเตอร์ใน FormData แทน Header
+            formData.append('key', PIC_IN_TH_API_KEY); 
             
-            // เพิ่ม API Key ใน Headers
-            const headers = new Headers();
-            headers.append('key', PIC_IN_TH_API_KEY);
+            // 🔴 แก้ไข: ไม่ต้องใส่ Headers ด้วยมือสำหรับ FormData (เบราว์เซอร์จะจัดการเอง)
 
             const response = await fetch(PIC_IN_TH_URL, {
                 method: 'POST',
-                headers: headers,
-                body: formData
+                body: formData // ส่ง FormData ที่มีทั้งไฟล์และ API Key
             });
 
             const result = await response.json();
 
             if (response.ok && result.status === 'success') {
-                const uploadedUrl = result.url_viewer; // ใช้ url_viewer เพื่อแสดงผล
+                // Pic.in.th คืนค่า URL ที่ใช้แสดงผลใน 'url_viewer'
+                const uploadedUrl = result.url_viewer; 
                 imageUrlInput.value = uploadedUrl;
                 uploadStatus.textContent = '✅ อัปโหลดสำเร็จ! URL ถูกกรอกในช่องเรียบร้อย';
                 uploadStatus.style.color = '#10b981';
 
             } else {
-                uploadStatus.textContent = `❌ อัปโหลดล้มเหลว: ${result.message || 'เกิดข้อผิดพลาดในการเรียก API'}`;
+                // แสดงข้อความผิดพลาดจาก API หากมี
+                uploadStatus.textContent = `❌ อัปโหลดล้มเหลว: ${result.message || 'ไม่สามารถอัปโหลดไฟล์ได้ (ตรวจสอบขนาด/ประเภทไฟล์)'}`;
                 uploadStatus.style.color = '#dc3545';
             }
 
         } catch (error) {
-            uploadStatus.textContent = `❌ ข้อผิดพลาดเครือข่าย: ไม่สามารถติดต่อ Pic.in.th ได้`;
+            uploadStatus.textContent = `❌ ข้อผิดพลาดเครือข่าย: ไม่สามารถติดต่อ Pic.in.th ได้ หรือ CORS ถูกบล็อก`;
             uploadStatus.style.color = '#dc3545';
             console.error('Upload Error:', error);
         } finally {
@@ -70,8 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- ฟังก์ชันหลักในการจัดการข้อมูล (เหมือนเดิม) ---
-
+    // --- ส่วนฟังก์ชันอื่น ๆ (getImages, saveImages, loadImages, handleFormSubmit, editImage, deleteImage, resetForm) ใช้โค้ดเดิม ---
+    
+    
     function getImages() {
         const data = localStorage.getItem(IMAGE_STORAGE_KEY);
         return data ? JSON.parse(data) : [];
@@ -120,12 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- ฟังก์ชันจัดการการส่งฟอร์ม (เพิ่ม/แก้ไข) ---
-
     function handleFormSubmit(event) {
         event.preventDefault();
         
-        // ตรวจสอบว่ามี URL ในช่องก่อนบันทึก
         if (!imageUrlInput.value) {
             alert("โปรดอัปโหลดรูปภาพหรือกรอก URL ก่อนบันทึก");
             return;
@@ -172,14 +171,11 @@ document.addEventListener('DOMContentLoaded', () => {
         resetForm();
     }
 
-    // --- ฟังก์ชันแก้ไข/ลบ/รีเซ็ต ---
-
     function editImage(id) {
         const images = getImages();
         const img = images.find(i => i.id === id);
         if (!img) return;
 
-        // เติมฟอร์ม
         document.getElementById('image-id').value = img.id;
         document.getElementById('image-url').value = img.url;
         document.getElementById('expiry-date').value = img.expiry_date ? img.expiry_date.split('T')[0] : '';
@@ -213,9 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'บันทึกรูปภาพ';
         cancelBtn.style.display = 'none';
         uploadStatus.textContent = '';
-        fileInput.value = ''; // ล้างไฟล์ที่เลือกไว้
+        fileInput.value = '';
+        imageUrlInput.value = ''; // 🔴 FIX: ล้าง URL ที่กรอกแล้ว
         
-        // ตั้งค่าเริ่มต้นใหม่
         document.getElementById('duration-sec').value = 10;
         document.getElementById('start-time').value = '08:00';
         document.getElementById('end-time').value = '20:00';
